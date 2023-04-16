@@ -31,9 +31,9 @@ class MyGame(arcade.Window):
             self.camera_change_x = -1
 
     def on_key_release(self, key, modifiers):
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.camera_change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.camera_change_x = 0
 
     def on_draw(self):

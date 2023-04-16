@@ -207,10 +207,14 @@ class PymunkPhysicsEngine:
 
     def get_sprite_for_shape(self, shape) -> Optional[Sprite]:
         """ Given a shape, what sprite is associated with it? """
-        for sprite in self.sprites:
-            if self.sprites[sprite].shape is shape:
-                return sprite
-        return None
+        return next(
+            (
+                sprite
+                for sprite in self.sprites
+                if self.sprites[sprite].shape is shape
+            ),
+            None,
+        )
 
     def get_sprites_from_arbiter(self, arbiter):
         """ Given a collision arbiter, return the sprites associated with the collision. """

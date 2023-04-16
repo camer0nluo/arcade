@@ -182,11 +182,11 @@ class PlayerCharacter(Entity):
             self.climbing = True
         if not self.is_on_ladder and self.climbing:
             self.climbing = False
-        if self.climbing and abs(self.change_y) > 1:
-            self.cur_texture += 1
-            if self.cur_texture > 7:
-                self.cur_texture = 0
         if self.climbing:
+            if abs(self.change_y) > 1:
+                self.cur_texture += 1
+                if self.cur_texture > 7:
+                    self.cur_texture = 0
             self.texture = self.climbing_textures[self.cur_texture // 4]
             return
 
@@ -277,7 +277,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Map name
-        map_name = f":resources:tiled_maps/map_with_ladders.json"
+        map_name = ":resources:tiled_maps/map_with_ladders.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -435,13 +435,13 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in [arcade.key.UP, arcade.key.W]:
             self.up_pressed = True
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in [arcade.key.DOWN, arcade.key.S]:
             self.down_pressed = True
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in [arcade.key.LEFT, arcade.key.A]:
             self.left_pressed = True
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in [arcade.key.RIGHT, arcade.key.D]:
             self.right_pressed = True
 
         if key == arcade.key.Q:
@@ -452,14 +452,14 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in [arcade.key.UP, arcade.key.W]:
             self.up_pressed = False
             self.jump_needs_reset = False
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in [arcade.key.DOWN, arcade.key.S]:
             self.down_pressed = False
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in [arcade.key.LEFT, arcade.key.A]:
             self.left_pressed = False
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in [arcade.key.RIGHT, arcade.key.D]:
             self.right_pressed = False
 
         if key == arcade.key.Q:
@@ -472,10 +472,8 @@ class MyGame(arcade.Window):
         screen_center_y = self.player_sprite.center_y - (
             self.camera.viewport_height / 2
         )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        screen_center_x = max(screen_center_x, 0)
+        screen_center_y = max(screen_center_y, 0)
         player_centered = screen_center_x, screen_center_y
 
         self.camera.move_to(player_centered, speed)
@@ -487,18 +485,12 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Update animations
-        if self.physics_engine.can_jump():
-            self.player_sprite.can_jump = False
-        else:
-            self.player_sprite.can_jump = True
-
-        if self.physics_engine.is_on_ladder() and not self.physics_engine.can_jump():
-            self.player_sprite.is_on_ladder = True
-            self.process_keychange()
-        else:
-            self.player_sprite.is_on_ladder = False
-            self.process_keychange()
-
+        self.player_sprite.can_jump = not self.physics_engine.can_jump()
+        self.player_sprite.is_on_ladder = bool(
+            self.physics_engine.is_on_ladder()
+            and not self.physics_engine.can_jump()
+        )
+        self.process_keychange()
         if self.can_shoot:
             if self.shoot_pressed:
                 arcade.play_sound(self.shoot_sound)
@@ -594,16 +586,14 @@ class MyGame(arcade.Window):
         )
 
         for bullet in self.scene.get_sprite_list(LAYER_NAME_BULLETS):
-            hit_list = arcade.check_for_collision_with_lists(
+            if hit_list := arcade.check_for_collision_with_lists(
                 bullet,
                 [
                     self.scene.get_sprite_list(LAYER_NAME_ENEMIES),
                     self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
                     self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS),
                 ],
-            )
-
-            if hit_list:
+            ):
                 bullet.remove_from_sprite_lists()
 
                 for collision in hit_list:

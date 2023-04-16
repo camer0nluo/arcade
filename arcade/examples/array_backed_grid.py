@@ -52,7 +52,7 @@ class MyGame(arcade.Window):
             # Add an empty array that will hold each cell
             # in this row
             self.grid.append([])
-            for column in range(COLUMN_COUNT):
+            for _ in range(COLUMN_COUNT):
                 self.grid[row].append(0)  # Append a cell
 
         arcade.set_background_color(arcade.color.BLACK)
@@ -97,10 +97,7 @@ class MyGame(arcade.Window):
         if row < ROW_COUNT and column < COLUMN_COUNT:
 
             # Flip the location between 1 and 0.
-            if self.grid[row][column] == 0:
-                self.grid[row][column] = 1
-            else:
-                self.grid[row][column] = 0
+            self.grid[row][column] = 1 if self.grid[row][column] == 0 else 0
 
 
 def main():

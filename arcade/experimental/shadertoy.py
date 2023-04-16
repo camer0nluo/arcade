@@ -222,11 +222,8 @@ class ShadertoyBase:
         """
         vs_path = arcade.resources.resolve_resource_path(":resources:shaders/shadertoy/base_vs.glsl")
         fs_path = arcade.resources.resolve_resource_path(":resources:shaders/shadertoy/base_fs.glsl")
-        with open(vs_path) as fd:
-            vs_source = fd.read()
-        with open(fs_path) as fd:
-            fs_source = fd.read()
-
+        vs_source = Path(vs_path).read_text()
+        fs_source = Path(fs_path).read_text()
         template = string.Template(fs_source)
 
         self._program = self.ctx.program(
@@ -238,7 +235,7 @@ class ShadertoyBase:
             try:
                 self._program[f"iChannel{channel}"] = channel
             except KeyError:
-                pass        
+                pass
         self._source = source
 
 
@@ -365,8 +362,7 @@ class Shadertoy(ShadertoyBase):
     @classmethod
     def create_from_file(cls, size: Tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
         path = arcade.resources.resolve_resource_path(path)
-        with open(path) as fd:
-            source = fd.read()
+        source = Path(path).read_text()
         return cls(size, source)
 
     def create_buffer(self, source, repeat: bool = False) -> ShadertoyBuffer:
@@ -380,8 +376,7 @@ class Shadertoy(ShadertoyBase):
         Shortcut for creating a buffer.
         """
         path = arcade.resources.resolve_resource_path(path)
-        with open(path) as fd:
-            source = fd.read()
+        source = Path(path).read_text()
         return ShadertoyBuffer(self._size, source)
 
     def resize(self, size: Tuple[int, int]):

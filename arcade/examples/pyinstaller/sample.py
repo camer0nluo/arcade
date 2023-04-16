@@ -8,7 +8,7 @@ BACKGROUND_COLOR = arcade.color.WHITE
 
 
 def resource_path(file):
-    path = 'resources/' + file
+    path = f'resources/{file}'
     # are we in a frozen environment (e.g. pyInstaller)?
     if getattr(sys, 'frozen', False):
         # noinspection PyProtectedMember,PyUnresolvedReferences

@@ -74,14 +74,14 @@ def draw_arc_filled(center_x: float, center_y: float,
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
     else:
-        uncentered_point_list = []
-        for point in unrotated_point_list:
-            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-
-    point_list = []
-    for point in uncentered_point_list:
-        point_list.append((point[0] + center_x, point[1] + center_y))
-
+        uncentered_point_list = [
+            rotate_point(point[0], point[1], 0, 0, tilt_angle)
+            for point in unrotated_point_list
+        ]
+    point_list = [
+        (point[0] + center_x, point[1] + center_y)
+        for point in uncentered_point_list
+    ]
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_FAN)
 
 
@@ -125,20 +125,18 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
         x2 = outside_width * math.cos(theta)
         y2 = outside_height * math.sin(theta)
 
-        unrotated_point_list.append([x1, y1])
-        unrotated_point_list.append([x2, y2])
-
+        unrotated_point_list.extend(([x1, y1], [x2, y2]))
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
     else:
-        uncentered_point_list = []
-        for point in unrotated_point_list:
-            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-
-    point_list = []
-    for point in uncentered_point_list:
-        point_list.append((point[0] + center_x, point[1] + center_y))
-
+        uncentered_point_list = [
+            rotate_point(point[0], point[1], 0, 0, tilt_angle)
+            for point in unrotated_point_list
+        ]
+    point_list = [
+        (point[0] + center_x, point[1] + center_y)
+        for point in uncentered_point_list
+    ]
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
@@ -688,7 +686,7 @@ def draw_polygon_outline(point_list: PointList,
          RGBA format.
     :param int line_width: Width of the line in pixels.
     """
-    new_point_list = [point for point in point_list]
+    new_point_list = list(point_list)
     new_point_list.append(point_list[0])
 
     triangle_point_list = []
@@ -863,12 +861,14 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
     """
     if left > right:
-        raise AttributeError("Left coordinate {} must be less than or equal "
-                             "to the right coordinate {}".format(left, right))
+        raise AttributeError(
+            f"Left coordinate {left} must be less than or equal to the right coordinate {right}"
+        )
 
     if bottom > top:
-        raise AttributeError("Bottom coordinate {} must be less than or equal "
-                             "to the top coordinate {}".format(bottom, top))
+        raise AttributeError(
+            f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}"
+        )
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2

@@ -23,10 +23,10 @@ class Light:
         :param float radius: The radius of the light
         :param str mode: `hard` or `soft`
         """
-        if not (isinstance(color, tuple) or isinstance(color, list)):
+        if not (isinstance(color, (tuple, list))):
             raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
 
-        if not isinstance(mode, str) or not (mode == 'soft' or mode == 'hard'):
+        if not isinstance(mode, str) or mode not in {'soft', 'hard'}:
             raise ValueError("Mode must be set to either 'soft' or 'hard'.")
 
         self._center_x = center_x
@@ -161,8 +161,7 @@ class LightLayer(RenderTargetTexture):
             data: List[float] = []
             for light in self._lights:
                 data.extend(light.position)
-                data.append(light.radius)
-                data.append(light._attenuation)
+                data.extend((light.radius, light._attenuation))
                 data.extend(light._color)
 
             while self._buffer.size < len(data) * self._stride:

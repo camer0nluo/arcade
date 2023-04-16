@@ -48,12 +48,7 @@ class MyGame(arcade.Window):
         """
         self.total_time += delta_time
 
-        # Calculate minutes
-        minutes = int(self.total_time) // 60
-
-        # Calculate seconds by using a modulus (remainder)
-        seconds = int(self.total_time) % 60
-
+        minutes, seconds = divmod(int(self.total_time), 60)
         # Calculate 100s of a second
         seconds_100s = int((self.total_time - seconds) * 100)
 

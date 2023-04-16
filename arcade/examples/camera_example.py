@@ -80,7 +80,7 @@ class MyGame(arcade.Window):
         """Set up the game and initialize the variables."""
 
         # Map name
-        map_name = f":resources:tiled_maps/level_1.json"
+        map_name = ":resources:tiled_maps/level_1.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -199,7 +199,7 @@ class MyGame(arcade.Window):
         """
         Called when the user presses a mouse button.
         """
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        if key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def pan_camera_to_user(self, panning_fraction: float = 1.0):
@@ -215,10 +215,8 @@ class MyGame(arcade.Window):
         screen_center_y = self.player_sprite.center_y - (
             self.camera.viewport_height / 2
         )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        screen_center_x = max(screen_center_x, 0)
+        screen_center_y = max(screen_center_y, 0)
         user_centered = screen_center_x, screen_center_y
 
         self.camera.move_to(user_centered, panning_fraction)

@@ -75,8 +75,7 @@ class MyGame(arcade.Window):
 
         # -- Randomly place coins where there are no walls
         # Create the coins
-        for i in range(NUMBER_OF_COINS):
-
+        for _ in range(NUMBER_OF_COINS):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
@@ -104,8 +103,6 @@ class MyGame(arcade.Window):
 
             # Add the coin to the lists
             self.coin_list.append(coin)
-
-            # --- END OF IMPORTANT PART ---
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
@@ -140,9 +137,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):

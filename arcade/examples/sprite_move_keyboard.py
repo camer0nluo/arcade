@@ -115,9 +115,9 @@ class MyGame(arcade.Window):
         # This doesn't work well if multiple keys are pressed.
         # Use 'better move by keyboard' example if you need to
         # handle this.
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
 

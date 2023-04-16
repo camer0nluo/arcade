@@ -102,20 +102,20 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in [arcade.key.UP, arcade.key.W]:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in [arcade.key.LEFT, arcade.key.A]:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in [arcade.key.RIGHT, arcade.key.D]:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
 
-        if key == arcade.key.LEFT or key == arcade.key.A:
+        if key in [arcade.key.LEFT, arcade.key.A]:
             self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in [arcade.key.RIGHT, arcade.key.D]:
             self.player_sprite.change_x = 0
 
     def center_camera_to_player(self):
@@ -125,10 +125,8 @@ class MyGame(arcade.Window):
         )
 
         # Don't let camera travel past 0
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        screen_center_x = max(screen_center_x, 0)
+        screen_center_y = max(screen_center_y, 0)
         player_centered = screen_center_x, screen_center_y
 
         self.camera.move_to(player_centered)

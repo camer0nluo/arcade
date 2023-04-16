@@ -86,16 +86,15 @@ def do_simulation_step(old_grid):
     for x in range(width):
         for y in range(height):
             alive_neighbors = count_alive_neighbors(old_grid, x, y)
-            if old_grid[y][x] == 1:
-                if alive_neighbors < DEATH_LIMIT:
-                    new_grid[y][x] = 0
-                else:
-                    new_grid[y][x] = 1
+            if (
+                old_grid[y][x] == 1
+                and alive_neighbors < DEATH_LIMIT
+                or old_grid[y][x] != 1
+                and alive_neighbors <= BIRTH_LIMIT
+            ):
+                new_grid[y][x] = 0
             else:
-                if alive_neighbors > BIRTH_LIMIT:
-                    new_grid[y][x] = 1
-                else:
-                    new_grid[y][x] = 0
+                new_grid[y][x] = 1
     return new_grid
 
 
@@ -133,26 +132,20 @@ class MyGame(arcade.Window):
         # Create cave system using a 2D grid
         self.grid = create_grid(GRID_WIDTH, GRID_HEIGHT)
         initialize_grid(self.grid)
-        for step in range(NUMBER_OF_STEPS):
+        for _ in range(NUMBER_OF_STEPS):
             self.grid = do_simulation_step(self.grid)
 
         # Create sprites based on 2D grid
-        if not MERGE_SPRITES:
-            # This is the simple-to-understand method. Each grid location
-            # is a sprite.
-            for row in range(GRID_HEIGHT):
+        for row in range(GRID_HEIGHT):
+                # Create sprites based on 2D grid
+            if not MERGE_SPRITES:
                 for column in range(GRID_WIDTH):
                     if self.grid[row][column] == 1:
                         wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
-        else:
-            # This uses new Arcade 1.3.1 features, that allow me to create a
-            # larger sprite with a repeating texture. So if there are multiple
-            # cells in a row with a wall, we merge them into one sprite, with a
-            # repeating texture for each cell. This reduces our sprite count.
-            for row in range(GRID_HEIGHT):
+            else:
                 column = 0
                 while column < GRID_WIDTH:
                     while column < GRID_WIDTH and self.grid[row][column] == 0:
@@ -248,9 +241,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_resize(self, width, height):

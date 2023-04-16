@@ -380,8 +380,7 @@ class Geometry:
         """
         Get the :py:class:`arcade.gl.VertexArray` compatible with this program
         """
-        vao = self._vao_cache.get(program.attribute_key)
-        if vao:
+        if vao := self._vao_cache.get(program.attribute_key):
             return vao
 
         return self._generate_vao(program)

@@ -253,6 +253,6 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         print(f"{prefix}{element.__class__}:{element.rect}")
         if isinstance(element, UIGroup):
             for child in element._children:
-                UIManager._debug(child, prefix=prefix + "  ")
+                UIManager._debug(child, prefix=f"{prefix}  ")
         if isinstance(element, UIWrapper):
-            UIManager._debug(element.child, prefix=prefix + "  ")
+            UIManager._debug(element.child, prefix=f"{prefix}  ")

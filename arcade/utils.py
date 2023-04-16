@@ -146,7 +146,7 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
     Such as `text='hi', size=32` it will return "text-hi-size-32".
     Called with no parameters, id does NOT return a random unique id.
     """
-    if len(kwargs) == 0:
+    if not kwargs:
         raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
 
     with StringIO() as guid:

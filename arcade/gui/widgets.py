@@ -622,10 +622,11 @@ class UITextArea(UIWidget):
     def on_event(self, event: UIEvent):
         super().on_event(event)
 
-        if isinstance(event, UIMouseScrollEvent):
-            if _point_in_rect(event.x, event.y, *self.rect):
-                self.layout.view_y += event.scroll_y
-                self.rendered = False
+        if isinstance(event, UIMouseScrollEvent) and _point_in_rect(
+            event.x, event.y, *self.rect
+        ):
+            self.layout.view_y += event.scroll_y
+            self.rendered = False
 
 
 class UIInputText(UIWidget):
@@ -663,12 +664,15 @@ class UIInputText(UIWidget):
         self.parent.rendered = False  # TODO we could have a method to request enforced rendering
 
         # if not active, check to activate, return
-        if not self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.collide_with_point(event.x, event.y):
-                self._active = True
-                self.caret.on_activate()
-                print("activate")
-                return
+        if (
+            not self._active
+            and isinstance(event, UIMousePressEvent)
+            and self.rect.collide_with_point(event.x, event.y)
+        ):
+            self._active = True
+            self.caret.on_activate()
+            print("activate")
+            return
 
         # if active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
@@ -777,12 +781,12 @@ class UIFlatButton(UIInteractiveWidget):
                 color=border_color,
                 border_width=border_width)
 
-        # render text
-        text_margin = 2
         if self.text:
             start_x = self.width // 2
             start_y = self.height // 2
 
+            # render text
+            text_margin = 2
             arcade.draw_text(
                 text=self.text,
                 start_x=start_x,

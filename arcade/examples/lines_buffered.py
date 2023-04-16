@@ -39,7 +39,7 @@ class MyGame(arcade.Window):
             for color in dir(arcade.color)
             if not color.startswith("__")
         ]
-        for i in range(200):
+        for _ in range(200):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT)
             color = random.choice(colors)

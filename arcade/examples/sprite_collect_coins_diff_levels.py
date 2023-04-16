@@ -83,8 +83,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def level_1(self):
-        for i in range(20):
-
+        for _ in range(20):
             # Create the coin instance
             coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
 
@@ -96,8 +95,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def level_2(self):
-        for i in range(30):
-
+        for _ in range(30):
             # Create the coin instance
             coin = FallingCoin(":resources:images/items/coinBronze.png" , SPRITE_SCALING / 2)
 
@@ -109,8 +107,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def level_3(self):
-        for i in range(30):
-
+        for _ in range(30):
             # Create the coin instance
             coin = RisingCoin(":resources:images/items/coinSilver.png" , SPRITE_SCALING / 2)
 
@@ -182,13 +179,13 @@ class MyGame(arcade.Window):
             self.score += 1
 
         # See if we should go to level 2
-        if len(self.coin_list) == 0 and self.level == 1:
-            self.level += 1
-            self.level_2()
-        # See if we should go to level 3
-        elif len(self.coin_list) == 0 and self.level == 2:
-            self.level += 1
-            self.level_3()
+        if len(self.coin_list) == 0:
+            if self.level == 1:
+                self.level += 1
+                self.level_2()
+            elif self.level == 2:
+                self.level += 1
+                self.level_3()
 
 
 def main():

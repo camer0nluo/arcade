@@ -208,13 +208,7 @@ class MyApplication(arcade.Window):
         # See if we clicked on anything
         shape_list = self.space.point_query((x, y), 1, pymunk.ShapeFilter())
 
-        # If we did, remember what we clicked on
-        if len(shape_list) > 0:
-            shape = shape_list[0]
-        else:
-            shape = None
-
-        return shape
+        return shape_list[0] if len(shape_list) > 0 else None
 
     def on_mouse_press(self, x, y, button, modifiers):
 

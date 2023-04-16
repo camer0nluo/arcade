@@ -66,7 +66,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
-        for i in range(50):
+        for _ in range(50):
             # Create the coin instance
             coin = Collectable(":resources:images/items/coinGold.png", SPRITE_SCALING)
             coin.width = 30

@@ -41,11 +41,13 @@ class Sound:
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         :param bool loop: Loop, false to play once, true to loop continously
         """
-        if isinstance(self.source, media.StreamingSource):
-            if self.source.is_player_source:
-                raise RuntimeError("Tried to play a streaming source more than once."
-                                   " Streaming sources should only be played in one instance."
-                                   " If you need more use a Static source.")
+        if (
+            isinstance(self.source, media.StreamingSource)
+            and self.source.is_player_source
+        ):
+            raise RuntimeError("Tried to play a streaming source more than once."
+                               " Streaming sources should only be played in one instance."
+                               " If you need more use a Static source.")
 
         player: media.Player = media.Player()
         player.volume = volume
@@ -79,10 +81,7 @@ class Sound:
 
     def is_complete(self, player: media.Player) -> bool:
         """ Return true if the sound is done playing. """
-        if player.time >= self.source.duration:
-            return True
-        else:
-            return False
+        return player.time >= self.source.duration
 
     def is_playing(self, player: media.Player) -> bool:
         """
@@ -139,8 +138,7 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
 
     try:
         file_name = str(path)
-        sound = Sound(file_name, streaming)
-        return sound
+        return Sound(file_name, streaming)
     except Exception as ex:
         raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}')
 

@@ -77,7 +77,7 @@ def main():
     draw_background()
 
     # Loop to draw ten birds in random locations.
-    for bird_count in range(10):
+    for _ in range(10):
         # Any random x from 0 to the width of the screen
         x = random.randrange(0, SCREEN_WIDTH)
 

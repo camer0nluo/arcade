@@ -98,8 +98,7 @@ class MyGame(arcade.Window):
         self.all_sprites_list.append(self.player_sprite)
 
         # Create the coins
-        for i in range(50):
-
+        for _ in range(50):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)

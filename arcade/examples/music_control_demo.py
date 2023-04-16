@@ -146,7 +146,7 @@ class MyView(arcade.View):
             # Play button hit, and we need to un-pause our playing.
             self.media_player.play()
             self.sound_button_on()
-        elif self.media_player.playing:
+        else:
             # We are playing music, so pause.
             self.media_player.pause()
             self.sound_button_off()

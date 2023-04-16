@@ -542,21 +542,21 @@ class Sprite:
 
     def _set_width(self, new_value: float):
         """Set the width in pixels of the sprite."""
-        if new_value != self._width:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
+        if new_value == self._width:
+            return
+        self.clear_spatial_hashes()
+        # If there is a hit box, rescale it to the new width
+        if self._points:
+            scale = new_value / self._width
+            old_points = self._points
+            self._points = [(point[0] * scale, point[1]) for point in old_points]
 
-            # If there is a hit box, rescale it to the new width
-            if self._points:
-                scale = new_value / self._width
-                old_points = self._points
-                self._points = [(point[0] * scale, point[1]) for point in old_points]
+        self._width = new_value
+        self._point_list_cache = None
+        self.add_spatial_hashes()
 
-            self._width = new_value
-            self.add_spatial_hashes()
-
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_size(self)
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_size(self)
 
     width = property(_get_width, _set_width)
 
@@ -566,21 +566,21 @@ class Sprite:
 
     def _set_height(self, new_value: float):
         """Set the center x coordinate of the sprite."""
-        if new_value != self._height:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
+        if new_value == self._height:
+            return
+        self.clear_spatial_hashes()
+        # If there is a hit box, rescale it to the new width
+        if self._points:
+            scale = new_value / self._height
+            old_points = self._points
+            self._points = [(point[0], point[1] * scale) for point in old_points]
 
-            # If there is a hit box, rescale it to the new width
-            if self._points:
-                scale = new_value / self._height
-                old_points = self._points
-                self._points = [(point[0], point[1] * scale) for point in old_points]
+        self._height = new_value
+        self._point_list_cache = None
+        self.add_spatial_hashes()
 
-            self._height = new_value
-            self.add_spatial_hashes()
-
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_height(self)
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_height(self)
 
     height = property(_get_height, _set_height)
 
@@ -590,17 +590,18 @@ class Sprite:
 
     def _set_scale(self, new_value: float):
         """Set the center x coordinate of the sprite."""
-        if new_value != self._scale:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._scale = new_value
-            if self._texture:
-                self._width = self._texture.width * self._scale
-                self._height = self._texture.height * self._scale
-            self.add_spatial_hashes()
+        if new_value == self._scale:
+            return
+        self.clear_spatial_hashes()
+        self._scale = new_value
+        if self._texture:
+            self._width = self._texture.width * self._scale
+            self._height = self._texture.height * self._scale
+        self._point_list_cache = None
+        self.add_spatial_hashes()
 
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_size(self)
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_size(self)
 
     scale = property(_get_scale, _set_scale)
 
@@ -849,7 +850,7 @@ class Sprite:
                 f"Invalid value for alpha. Must be 0 to 255, received {alpha}"
             )
 
-        self._alpha = int(alpha)
+        self._alpha = alpha
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1236,7 +1237,7 @@ def load_animated_gif(resource_name):
     print(image_object.n_frames)
 
     sprite = AnimatedTimeBasedSprite()
-    for frame in range(0, image_object.n_frames):
+    for frame in range(image_object.n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
         print(frame_duration)
@@ -1302,8 +1303,7 @@ def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     :return: Distance
     :rtype: float
     """
-    distance = math.sqrt(
+    return math.sqrt(
         (sprite1.center_x - sprite2.center_x) ** 2
         + (sprite1.center_y - sprite2.center_y) ** 2
     )
-    return distance

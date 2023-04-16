@@ -80,7 +80,7 @@ def create_text_image(
     font_found = False
     for font_string_name in font_names:
         try:
-            font = PIL.ImageFont.truetype(font_string_name, int(font_size))
+            font = PIL.ImageFont.truetype(font_string_name, font_size)
         except OSError:
             continue
         else:
@@ -93,7 +93,7 @@ def create_text_image(
 
             font_config = pyglet.font.fontconfig.get_fontconfig()
             result = font_config.find_font("Arial")
-            font = PIL.ImageFont.truetype(result.name, int(font_size))
+            font = PIL.ImageFont.truetype(result.name, font_size)
         except Exception:
             # NOTE: Will catch OSError from loading font and missing fontconfig in pyglet
             pass
@@ -133,23 +133,19 @@ def create_text_image(
     specified_width = width
     if specified_width == 0:
         width = text_image_size[0]
+    elif align == "center":
+        image_start_x = width * scale_up // 2 - text_width // 2
     else:
-        # Wait! We were given a field width.
-        if align == "center":
-            # Center text on given field width
-            field_width = width * scale_up
-            image_start_x = (field_width // 2) - (text_width // 2)
-        else:
-            image_start_x = 0
+        image_start_x = 0
 
     # Find y of top-left corner
     image_start_y = 0
 
-    if height and valign == "middle":
-        field_height = height * scale_up
-        image_start_y = (field_height // 2) - (text_height // 2)
-
     if height:
+        if valign == "middle":
+            field_height = height * scale_up
+            image_start_y = (field_height // 2) - (text_height // 2)
+
         text_image_size[1] = height * scale_up
 
     if specified_width:
@@ -233,10 +229,10 @@ def create_text_sprite(
     text_sprite.width = image.width
     text_sprite.height = image.height
 
-    if anchor_x == "left":
-        text_sprite.center_x = start_x + text_sprite.width / 2
-    elif anchor_x == "center":
+    if anchor_x == "center":
         text_sprite.center_x = start_x
+    elif anchor_x == "left":
+        text_sprite.center_x = start_x + text_sprite.width / 2
     elif anchor_x == "right":
         text_sprite.right = start_x
     else:
@@ -248,7 +244,7 @@ def create_text_sprite(
         text_sprite.center_y = start_y - text_sprite.height / 2
     elif anchor_y == "center":
         text_sprite.center_y = start_y
-    elif anchor_y == "bottom" or anchor_y == "baseline":
+    elif anchor_y in {"bottom", "baseline"}:
         text_sprite.center_y = start_y + text_sprite.height / 2
     else:
         raise ValueError(

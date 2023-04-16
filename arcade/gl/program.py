@@ -440,7 +440,7 @@ class Program:
             gl.glGetProgramiv(glo, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
             gl.glGetProgramInfoLog(glo, len(log), None, log)
-            raise ShaderException("Program link error: {}".format(log.value.decode()))
+            raise ShaderException(f"Program link error: {log.value.decode()}")
 
     def __repr__(self):
-        return "<Program id={}>".format(self._glo)
+        return f"<Program id={self._glo}>"

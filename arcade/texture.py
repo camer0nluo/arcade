@@ -137,16 +137,12 @@ class Texture:
     def __eq__(self, other) -> bool:
         if other is None:
             return False
-        if not isinstance(other, self.__class__):
-            return False
-        return self.name == other.name
+        return self.name == other.name if isinstance(other, self.__class__) else False
 
     def __ne__(self, other) -> bool:
         if other is None:
             return True
-        if not isinstance(other, self.__class__):
-            return True
-        return self.name != other.name
+        return self.name != other.name if isinstance(other, self.__class__) else True
     # ------------------------------------------------------------
 
     @property
@@ -178,9 +174,7 @@ class Texture:
 
     @property
     def hit_box_points(self):
-        if self._hit_box_points is not None:
-            return self._hit_box_points
-        else:
+        if self._hit_box_points is None:
             if not self.image:
                 raise ValueError(f"Texture '{self.name}' doesn't have an image")
 
@@ -196,7 +190,7 @@ class Texture:
 
                 self._hit_box_points = p1, p2, p3, p4
 
-            return self._hit_box_points
+        return self._hit_box_points
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
@@ -299,7 +293,7 @@ def load_textures(file_name: Union[str, Path],
     :raises: ValueError
     """
     # See if we already loaded this texture file, and we can just use a cached version.
-    cache_file_name = "{}".format(file_name)
+    cache_file_name = f"{file_name}"
     if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
         source_image = texture.image
@@ -316,27 +310,26 @@ def load_textures(file_name: Union[str, Path],
         x, y, width, height = image_location
 
         if width <= 0:
-            raise ValueError("Texture has a width of {}, must be > 0."
-                             .format(width))
+            raise ValueError(f"Texture has a width of {width}, must be > 0.")
         if x > source_image_width:
-            raise ValueError("Can't load texture starting at an x of {} "
-                             "when the image is only {} across."
-                             .format(x, source_image_width))
+            raise ValueError(
+                f"Can't load texture starting at an x of {x} when the image is only {source_image_width} across."
+            )
         if y > source_image_height:
-            raise ValueError("Can't load texture starting at an y of {} "
-                             "when the image is only {} high."
-                             .format(y, source_image_height))
+            raise ValueError(
+                f"Can't load texture starting at an y of {y} when the image is only {source_image_height} high."
+            )
         if x + width > source_image_width:
-            raise ValueError("Can't load texture ending at an x of {} "
-                             "when the image is only {} wide."
-                             .format(x + width, source_image_width))
+            raise ValueError(
+                f"Can't load texture ending at an x of {x + width} when the image is only {source_image_width} wide."
+            )
         if y + height > source_image_height:
-            raise ValueError("Can't load texture ending at an y of {} "
-                             "when the image is only {} high."
-                             .format(y + height, source_image_height))
+            raise ValueError(
+                f"Can't load texture ending at an y of {y + height} when the image is only {source_image_height} high."
+            )
 
         # See if we already loaded this texture, and we can just use a cached version.
-        cache_name = "{}{}{}{}{}{}{}".format(file_name, x, y, width, height, flipped, mirrored)
+        cache_name = f"{file_name}{x}{y}{width}{height}{flipped}{mirrored}"
         if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
             result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
         else:
@@ -424,15 +417,7 @@ def load_texture(file_name: Union[str, Path],
         flipped_horizontally = mirrored
 
     # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = "{}-{}-{}-{}-{}-{}-{}-{}-{}".format(file_name,
-                                                     x,
-                                                     y,
-                                                     width,
-                                                     height,
-                                                     flipped_horizontally,
-                                                     flipped_vertically,
-                                                     flipped_diagonally,
-                                                     hit_box_algorithm)
+    cache_name = f"{file_name}-{x}-{y}-{width}-{height}-{flipped_horizontally}-{flipped_vertically}-{flipped_diagonally}-{hit_box_algorithm}"
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
@@ -455,21 +440,21 @@ def load_texture(file_name: Union[str, Path],
 
     if x != 0 or y != 0 or width != 0 or height != 0:
         if x > source_image_width:
-            raise ValueError("Can't load texture starting at an x of {} "
-                             "when the image is only {} across."
-                             .format(x, source_image_width))
+            raise ValueError(
+                f"Can't load texture starting at an x of {x} when the image is only {source_image_width} across."
+            )
         if y > source_image_height:
-            raise ValueError("Can't load texture starting at an y of {} "
-                             "when the image is only {} high."
-                             .format(y, source_image_height))
+            raise ValueError(
+                f"Can't load texture starting at an y of {y} when the image is only {source_image_height} high."
+            )
         if x + width > source_image_width:
-            raise ValueError("Can't load texture ending at an x of {} "
-                             "when the image is only {} wide."
-                             .format(x + width, source_image_width))
+            raise ValueError(
+                f"Can't load texture ending at an x of {x + width} when the image is only {source_image_width} wide."
+            )
         if y + height > source_image_height:
-            raise ValueError("Can't load texture ending at an y of {} "
-                             "when the image is only {} high."
-                             .format(y + height, source_image_height))
+            raise ValueError(
+                f"Can't load texture ending at an y of {y + height} when the image is only {source_image_height} high."
+            )
 
         image = source_image.crop((x, y, x + width, y + height))
     else:
@@ -492,7 +477,7 @@ def load_texture(file_name: Union[str, Path],
     return result
 
 
-load_texture.texture_cache = dict()  # type: ignore
+load_texture.texture_cache = {}
 
 
 def cleanup_texture_cache():
@@ -500,7 +485,7 @@ def cleanup_texture_cache():
     This cleans up the cache of textures. Useful when running unit tests so that
     the next test starts clean.
     """
-    load_texture.texture_cache = dict()
+    load_texture.texture_cache = {}
     import gc
     gc.collect()
 
@@ -568,7 +553,7 @@ def make_circle_texture(diameter: int, color: Color) -> Texture:
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    name = "{}:{}:{}".format("circle_texture", diameter, color)  # name must be unique for caching
+    name = f"circle_texture:{diameter}:{color}"
     return Texture(name, img)
 
 
@@ -595,8 +580,7 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
         alpha = int(lerp(center_alpha, outer_alpha, radius / max_radius))
         clr = (color[0], color[1], color[2], alpha)
         draw.ellipse((center - radius, center - radius, center + radius - 1, center + radius - 1), fill=clr)
-    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
+    name = f"soft_circle_texture:{diameter}:{color}:{center_alpha}:{outer_alpha}"
     return Texture(name, img)
 
 
@@ -616,13 +600,12 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     img = PIL.Image.new("RGBA", (size, size), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     half_size = int(size // 2)
-    for cur_size in range(0, half_size):
+    for cur_size in range(half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
         # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
         draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
-    name = "{}:{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
+    name = f"gradientsquare:{size}:{color}:{center_alpha}:{outer_alpha}"
     return Texture(name, img)
 
 

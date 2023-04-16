@@ -111,9 +111,7 @@ def clamp(num, min_val, max_val):
 class Vec2(tuple):
     def __new__(cls, *args):
         len_args = len(args)
-        assert (
-            len_args == 2 or len_args == 0
-        ), "0 or 2 values are required for Vec2 types."
+        assert len_args in {2, 0}, "0 or 2 values are required for Vec2 types."
         return super().__new__(Vec2, args or (0, 0))
 
     @property
@@ -155,10 +153,7 @@ class Vec2(tuple):
         return Vec2(-self[0], -self[1])
 
     def normalize(self):
-        d = self.__abs__()
-        if d:
-            return Vec2(self[0] / d, self[1] / d)
-        return self
+        return Vec2(self[0] / d, self[1] / d) if (d := self.__abs__()) else self
 
     def clamp(self, min_val, max_val):
         return Vec2(clamp(self[0], min_val, max_val), clamp(self[1], min_val, max_val))
@@ -178,9 +173,7 @@ class Vec2(tuple):
 class Vec3(tuple):
     def __new__(cls, *args):
         len_args = len(args)
-        assert (
-            len_args == 3 or len_args == 0
-        ), "0 or 3 values are required for Vec3 types."
+        assert len_args in {3, 0}, "0 or 3 values are required for Vec3 types."
         return super().__new__(Vec3, args or (0, 0, 0))
 
     @property
@@ -241,8 +234,7 @@ class Vec3(tuple):
         return Vec3(-self[0], -self[1], -self[2])
 
     def normalize(self):
-        d = self.__abs__()
-        if d:
+        if d := self.__abs__():
             return Vec3(self[0] / d, self[1] / d, self[2] / d)
         return self
 
@@ -345,8 +337,7 @@ class Vec4(tuple):
         return Vec4(-self[0], -self[1], -self[2], -self[3])
 
     def normalize(self):
-        d = self.__abs__()
-        if d:
+        if d := self.__abs__():
             return Vec4(self[0] / d, self[1] / d, self[2] / d, self[3] / d)
         return self
 
@@ -399,7 +390,7 @@ class Mat3(tuple):
         return Mat3(tuple(-v for v in self))
 
     def __matmul__(self, other) -> "Mat3":
-        assert len(other) in (4, 16), "Can only multiply with Mat4 or Vec4 types"
+        assert len(other) in {4, 16}, "Can only multiply with Mat4 or Vec4 types"
 
         return Mat3(
             (
@@ -633,7 +624,7 @@ class Mat4(tuple):
 
     def transpose(self) -> "Mat4":
         """Get a tranpose of this Matrix."""
-        return Mat4(self[0::4] + self[1::4] + self[2::4] + self[3::4])
+        return Mat4(self[::4] + self[1::4] + self[2::4] + self[3::4])
 
     def __add__(self, other) -> "Mat4":
         assert len(other) == 16, "Can only add to other Mat4 types"
@@ -715,11 +706,11 @@ class Mat4(tuple):
         )
 
     def __matmul__(self, other) -> "Mat4":
-        assert len(other) in (4, 16), "Can only multiply with Mat4 or Vec4 types"
+        assert len(other) in {4, 16}, "Can only multiply with Mat4 or Vec4 types"
 
         if type(other) is Vec4:
             # Columns:
-            c0 = self[0::4]
+            c0 = self[::4]
             c1 = self[1::4]
             c2 = self[2::4]
             c3 = self[3::4]
@@ -731,12 +722,12 @@ class Mat4(tuple):
             )
 
         # Rows:
-        r0 = self[0:4]
+        r0 = self[:4]
         r1 = self[4:8]
         r2 = self[8:12]
         r3 = self[12:16]
         # Columns:
-        c0 = other[0::4]
+        c0 = other[::4]
         c1 = other[1::4]
         c2 = other[2::4]
         c3 = other[3::4]
@@ -764,15 +755,13 @@ class Mat4(tuple):
         )
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}{self[0:4]}\n    {self[4:8]}\n    {self[8:12]}\n    {self[12:16]}"
+        return f"{self.__class__.__name__}{self[:4]}\n    {self[4:8]}\n    {self[8:12]}\n    {self[12:16]}"
 
 
 class Vec2(tuple):
     def __new__(cls, *args):
         len_args = len(args)
-        assert (
-            len_args == 2 or len_args == 0
-        ), "0 or 2 values are required for Vec2 types."
+        assert len_args in {2, 0}, "0 or 2 values are required for Vec2 types."
         return super().__new__(Vec2, args or (0, 0))
 
     @property
@@ -814,10 +803,7 @@ class Vec2(tuple):
         return Vec2(-self[0], -self[1])
 
     def normalize(self):
-        d = self.__abs__()
-        if d:
-            return Vec2(self[0] / d, self[1] / d)
-        return self
+        return Vec2(self[0] / d, self[1] / d) if (d := self.__abs__()) else self
 
     def clamp(self, min_val, max_val):
         return Vec2(clamp(self[0], min_val, max_val), clamp(self[1], min_val, max_val))
@@ -837,9 +823,7 @@ class Vec2(tuple):
 class Vec3(tuple):
     def __new__(cls, *args):
         len_args = len(args)
-        assert (
-            len_args == 3 or len_args == 0
-        ), "0 or 3 values are required for Vec3 types."
+        assert len_args in {3, 0}, "0 or 3 values are required for Vec3 types."
         return super().__new__(Vec3, args or (0, 0, 0))
 
     @property
@@ -900,8 +884,7 @@ class Vec3(tuple):
         return Vec3(-self[0], -self[1], -self[2])
 
     def normalize(self):
-        d = self.__abs__()
-        if d:
+        if d := self.__abs__():
             return Vec3(self[0] / d, self[1] / d, self[2] / d)
         return self
 
@@ -1004,8 +987,7 @@ class Vec4(tuple):
         return Vec4(-self[0], -self[1], -self[2], -self[3])
 
     def normalize(self):
-        d = self.__abs__()
-        if d:
+        if d := self.__abs__():
             return Vec4(self[0] / d, self[1] / d, self[2] / d, self[3] / d)
         return self
 
@@ -1058,7 +1040,7 @@ class Mat3(tuple):
         return Mat3(tuple(-v for v in self))
 
     def __matmul__(self, other) -> "Mat3":
-        assert len(other) in (3, 9), "Can only multiply with Mat4 or Vec4 types"
+        assert len(other) in {3, 9}, "Can only multiply with Mat4 or Vec4 types"
 
         return Mat3(
             (
@@ -1292,7 +1274,7 @@ class Mat4(tuple):
 
     def transpose(self) -> "Mat4":
         """Get a tranpose of this Matrix."""
-        return Mat4(self[0::4] + self[1::4] + self[2::4] + self[3::4])
+        return Mat4(self[::4] + self[1::4] + self[2::4] + self[3::4])
 
     def __add__(self, other) -> "Mat4":
         assert len(other) == 16, "Can only add to other Mat4 types"
@@ -1374,11 +1356,11 @@ class Mat4(tuple):
         )
 
     def __matmul__(self, other) -> "Mat4":
-        assert len(other) in (4, 16), "Can only multiply with Mat4 or Vec4 types"
+        assert len(other) in {4, 16}, "Can only multiply with Mat4 or Vec4 types"
 
         if type(other) is Vec4:
             # Columns:
-            c0 = self[0::4]
+            c0 = self[::4]
             c1 = self[1::4]
             c2 = self[2::4]
             c3 = self[3::4]
@@ -1390,12 +1372,12 @@ class Mat4(tuple):
             )
 
         # Rows:
-        r0 = self[0:4]
+        r0 = self[:4]
         r1 = self[4:8]
         r2 = self[8:12]
         r3 = self[12:16]
         # Columns:
-        c0 = other[0::4]
+        c0 = other[::4]
         c1 = other[1::4]
         c2 = other[2::4]
         c3 = other[3::4]
@@ -1423,4 +1405,4 @@ class Mat4(tuple):
         )
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}{self[0:4]}\n    {self[4:8]}\n    {self[8:12]}\n    {self[12:16]}"
+        return f"{self.__class__.__name__}{self[:4]}\n    {self[4:8]}\n    {self[8:12]}\n    {self[12:16]}"

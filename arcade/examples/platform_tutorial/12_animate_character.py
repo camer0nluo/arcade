@@ -113,11 +113,11 @@ class PlayerCharacter(arcade.Sprite):
             self.climbing = True
         if not self.is_on_ladder and self.climbing:
             self.climbing = False
-        if self.climbing and abs(self.change_y) > 1:
-            self.cur_texture += 1
-            if self.cur_texture > 7:
-                self.cur_texture = 0
         if self.climbing:
+            if abs(self.change_y) > 1:
+                self.cur_texture += 1
+                if self.cur_texture > 7:
+                    self.cur_texture = 0
             self.texture = self.climbing_textures[self.cur_texture // 4]
             return
 
@@ -203,7 +203,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Map name
-        map_name = f":resources:tiled_maps/map_with_ladders.json"
+        map_name = ":resources:tiled_maps/map_with_ladders.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -324,13 +324,13 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in [arcade.key.UP, arcade.key.W]:
             self.up_pressed = True
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in [arcade.key.DOWN, arcade.key.S]:
             self.down_pressed = True
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in [arcade.key.LEFT, arcade.key.A]:
             self.left_pressed = True
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in [arcade.key.RIGHT, arcade.key.D]:
             self.right_pressed = True
 
         self.process_keychange()
@@ -338,14 +338,14 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in [arcade.key.UP, arcade.key.W]:
             self.up_pressed = False
             self.jump_needs_reset = False
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in [arcade.key.DOWN, arcade.key.S]:
             self.down_pressed = False
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in [arcade.key.LEFT, arcade.key.A]:
             self.left_pressed = False
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in [arcade.key.RIGHT, arcade.key.D]:
             self.right_pressed = False
 
         self.process_keychange()
@@ -355,10 +355,8 @@ class MyGame(arcade.Window):
         screen_center_y = self.player_sprite.center_y - (
             self.camera.viewport_height / 2
         )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        screen_center_x = max(screen_center_x, 0)
+        screen_center_y = max(screen_center_y, 0)
         player_centered = screen_center_x, screen_center_y
 
         self.camera.move_to(player_centered, 0.2)
@@ -370,18 +368,12 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Update animations
-        if self.physics_engine.can_jump():
-            self.player_sprite.can_jump = False
-        else:
-            self.player_sprite.can_jump = True
-
-        if self.physics_engine.is_on_ladder() and not self.physics_engine.can_jump():
-            self.player_sprite.is_on_ladder = True
-            self.process_keychange()
-        else:
-            self.player_sprite.is_on_ladder = False
-            self.process_keychange()
-
+        self.player_sprite.can_jump = not self.physics_engine.can_jump()
+        self.player_sprite.is_on_ladder = bool(
+            self.physics_engine.is_on_ladder()
+            and not self.physics_engine.can_jump()
+        )
+        self.process_keychange()
         # Update Animations
         self.scene.update_animation(
             delta_time, [LAYER_NAME_COINS, LAYER_NAME_BACKGROUND, LAYER_NAME_PLAYER]

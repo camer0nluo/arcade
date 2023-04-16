@@ -350,7 +350,7 @@ class Texture:
 
     @filter.setter
     def filter(self, value: Tuple[int, int]):
-        if not isinstance(value, tuple) or not len(value) == 2:
+        if not isinstance(value, tuple) or len(value) != 2:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
 
         self._filter = value
@@ -589,6 +589,4 @@ class Texture:
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
 
     def __repr__(self) -> str:
-        return "<Texture glo={} size={}x{} components={}>".format(
-            self._glo.value, self._width, self._height, self._components
-        )
+        return f"<Texture glo={self._glo.value} size={self._width}x{self._height} components={self._components}>"

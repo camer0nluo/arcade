@@ -178,19 +178,20 @@ class MyGame(arcade.Window):
           Update sprite list with stones
           Create a new stone
         """
-        if not self.game_over and not self.paused:
-            self.stone_y += 1
-            if check_collision(self.board, self.stone, (self.stone_x, self.stone_y)):
-                self.board = join_matrixes(self.board, self.stone, (self.stone_x, self.stone_y))
-                while True:
-                    for i, row in enumerate(self.board[:-1]):
-                        if 0 not in row:
-                            self.board = remove_row(self.board, i)
-                            break
-                    else:
+        if self.game_over or self.paused:
+            return
+        self.stone_y += 1
+        if check_collision(self.board, self.stone, (self.stone_x, self.stone_y)):
+            self.board = join_matrixes(self.board, self.stone, (self.stone_x, self.stone_y))
+            while True:
+                for i, row in enumerate(self.board[:-1]):
+                    if 0 not in row:
+                        self.board = remove_row(self.board, i)
                         break
-                self.update_board()
-                self.new_stone()
+                else:
+                    break
+            self.update_board()
+            self.new_stone()
 
     def rotate_stone(self):
         """ Rotate the stone, check collision. """
@@ -211,10 +212,8 @@ class MyGame(arcade.Window):
         """ Move the stone back and forth based on delta x. """
         if not self.game_over and not self.paused:
             new_x = self.stone_x + delta_x
-            if new_x < 0:
-                new_x = 0
-            if new_x > COLUMN_COUNT - len(self.stone[0]):
-                new_x = COLUMN_COUNT - len(self.stone[0])
+            new_x = max(new_x, 0)
+            new_x = min(new_x, COLUMN_COUNT - len(self.stone[0]))
             if not check_collision(self.board, self.stone, (new_x, self.stone_y)):
                 self.stone_x = new_x
 

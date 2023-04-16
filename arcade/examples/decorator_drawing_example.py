@@ -28,7 +28,7 @@ def setup():
 
 
 def create_birds():
-    for bird_count in range(10):
+    for _ in range(10):
         x = random.randrange(SCREEN_WIDTH)
         y = random.randrange(SCREEN_HEIGHT // 2, SCREEN_HEIGHT)
         bird_list.append([x, y])

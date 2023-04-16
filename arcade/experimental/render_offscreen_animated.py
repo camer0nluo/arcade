@@ -20,7 +20,7 @@ def make_star_field(star_count):
 
     shape_list = arcade.ShapeElementList()
 
-    for star_no in range(star_count):
+    for _ in range(star_count):
         x = random.randrange(SCREEN_WIDTH)
         y = random.randrange(SCREEN_HEIGHT)
         radius = random.randrange(1, 4)
@@ -52,11 +52,7 @@ def make_skyline(width, skyline_height, skyline_color,
     while building_center_x < width:
 
         # Is there a gap between the buildings?
-        if random.random() < gap_chance:
-            gap_width = random.randrange(10, 50)
-        else:
-            gap_width = 0
-
+        gap_width = random.randrange(10, 50) if random.random() < gap_chance else 0
         # Figure out location and size of building
         building_width = random.randrange(20, 70)
         building_height = random.randrange(40, 150)
@@ -68,17 +64,11 @@ def make_skyline(width, skyline_height, skyline_color,
         y1 = skyline_height
         y2 = skyline_height + building_height
 
-        skyline_point_list.append([x1, y1])
-
-        skyline_point_list.append([x1, y2])
-
-        skyline_point_list.append([x2, y2])
-
-        skyline_point_list.append([x2, y1])
-
-        for i in range(4):
-            color_list.append([skyline_color[0], skyline_color[1], skyline_color[2]])
-
+        skyline_point_list.extend(([x1, y1], [x1, y2], [x2, y2], [x2, y1]))
+        color_list.extend(
+            [skyline_color[0], skyline_color[1], skyline_color[2]]
+            for _ in range(4)
+        )
         if random.random() < cap_chance:
             x1 = building_center_x - building_width / 2
             x2 = building_center_x + building_width / 2
@@ -113,14 +103,11 @@ def make_skyline(width, skyline_height, skyline_color,
                         y1 = building_base_y + row * window_height
                         y2 = building_base_y + row * window_height + window_height * .8
 
-                        skyline_point_list.append([x1, y1])
-                        skyline_point_list.append([x1, y2])
-                        skyline_point_list.append([x2, y2])
-                        skyline_point_list.append([x2, y1])
-
-                        for i in range(4):
-                            color_list.append((window_color[0], window_color[1], window_color[2]))
-
+                        skyline_point_list.extend(([x1, y1], [x1, y2], [x2, y2], [x2, y1]))
+                        color_list.extend(
+                            (window_color[0], window_color[1], window_color[2])
+                            for _ in range(4)
+                        )
         building_center_x += (building_width / 2)
 
     shape = arcade.create_rectangles_filled_with_colors(skyline_point_list, color_list)

@@ -92,8 +92,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
 
-        for i in range(50):
-
+        for _ in range(50):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
@@ -127,7 +126,7 @@ class MyGame(arcade.Window):
         self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        output = "Score: " + str(self.score)
+        output = f"Score: {str(self.score)}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):

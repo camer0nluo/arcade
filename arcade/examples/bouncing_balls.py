@@ -75,7 +75,7 @@ class MyGame(arcade.Window):
             arcade.draw_circle_filled(ball.x, ball.y, ball.size, ball.color)
 
         # Put the text on the screen.
-        output = "Balls: {}".format(len(self.ball_list))
+        output = f"Balls: {len(self.ball_list)}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_update(self, delta_time):

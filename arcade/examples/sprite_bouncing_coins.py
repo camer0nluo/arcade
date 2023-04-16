@@ -90,7 +90,7 @@ class MyGame(arcade.Window):
                 self.wall_list.append(wall)
 
         # Create coins
-        for i in range(10):
+        for _ in range(10):
             coin = arcade.Sprite(":resources:images/items/coinGold.png", 0.25)
             coin.center_x = random.randrange(100, 700)
             coin.center_y = random.randrange(100, 500)

@@ -80,10 +80,11 @@ def _is_convex(prev, point, next_point):
 
 
 def _is_ear(p1, p2, p3, polygon):
-    ear = _contains_no_points(p1, p2, p3, polygon) and \
-          _is_convex(p1, p2, p3) and \
-          _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
-    return ear
+    return (
+        _contains_no_points(p1, p2, p3, polygon)
+        and _is_convex(p1, p2, p3)
+        and _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
+    )
 
 
 def _contains_no_points(p1, p2, p3, polygon):

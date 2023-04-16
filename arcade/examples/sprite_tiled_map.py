@@ -194,7 +194,7 @@ class MyGame(arcade.Window):
         """
         Called when the user presses a mouse button.
         """
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        if key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):

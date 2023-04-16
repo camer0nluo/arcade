@@ -250,7 +250,7 @@ class ArcadeContext(Context):
     @projection_2d_matrix.setter
     def projection_2d_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
-            raise ValueError(f"projection_matrix must be a Mat4 object")
+            raise ValueError("projection_matrix must be a Mat4 object")
 
         self._projection_2d_matrix = value
         self._projection_2d_buffer.write(self._projection_2d_matrix)

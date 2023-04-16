@@ -52,7 +52,7 @@ class MyGame(arcade.Window):
         """ Set up snowfall and initialize variables. """
         self.snowflake_list = []
 
-        for i in range(50):
+        for _ in range(50):
             # Create snowflake instance
             snowflake = Snowflake()
 

@@ -26,10 +26,9 @@ def calculate_hit_box_points_simple(image):
             pixel = image.getpixel(pos)
             if type(pixel) is int or len(pixel) != 4:
                 raise TypeError("Error, calculate_points called on image not in RGBA format")
-            else:
-                if pixel[3] != 0:
-                    good = False
-                    break
+            if pixel[3] != 0:
+                good = False
+                break
         if good:
             left_border += 1
 
@@ -161,10 +160,7 @@ def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5)
 
         point_tuple = sample_point[0], sample_point[1]
         color = image.getpixel(point_tuple)
-        if color[3] > 0:
-            return 255
-        else:
-            return 0
+        return 255 if color[3] > 0 else 0
 
     # Do a quick check if it is a full tile
     p1 = 0, 0

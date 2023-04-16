@@ -180,7 +180,7 @@ class MyGame(arcade.Window):
 
         # Draw game over if the game state is such
         if self.game_state == GAME_OVER:
-            arcade.draw_text(f"GAME OVER", 250, 300, arcade.color.WHITE, 55)
+            arcade.draw_text("GAME OVER", 250, 300, arcade.color.WHITE, 55)
             self.set_mouse_visible(True)
 
     def on_mouse_motion(self, x, y, dx, dy):

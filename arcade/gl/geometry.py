@@ -9,10 +9,10 @@ from arcade.gl.vertex_array import Geometry
 
 
 def _get_active_context() -> Context:
-    ctx = Context.active
-    if not ctx:
+    if ctx := Context.active:
+        return ctx
+    else:
         raise RuntimeError("No context is currently activated")
-    return ctx
 
 
 def quad_2d_fs() -> Geometry:

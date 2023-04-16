@@ -28,11 +28,9 @@ class Explosion(arcade.Sprite):
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
         self.current_texture += 1
-        if self.current_texture < len(self.textures):
-            self.set_texture(self.current_texture)
-        else:
+        if self.current_texture >= len(self.textures):
             self.current_texture = 0
-            self.set_texture(self.current_texture)
+        self.set_texture(self.current_texture)
 
 
 class UIMockup(arcade.Window):

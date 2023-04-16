@@ -733,7 +733,7 @@ class MyGame(arcade.Window):
 
     def next_emitter(self, _time_delta):
         self.emitter_factory_id = (self.emitter_factory_id + 1) % len(self.factories)
-        print("Changing emitter to {}".format(self.emitter_factory_id))
+        print(f"Changing emitter to {self.emitter_factory_id}")
         self.emitter_timeout = 0
         self.label, self.emitter = self.factories[self.emitter_factory_id]()
 
@@ -752,13 +752,26 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.obj.draw()
         if self.label:
-            arcade.draw_text("#{} {}".format(self.emitter_factory_id, self.label),
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT - 20,
-                             arcade.color.PALE_GOLD, 20, width=SCREEN_WIDTH, align="center",
-                             anchor_x="center", anchor_y="center")
+            arcade.draw_text(
+                f"#{self.emitter_factory_id} {self.label}",
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT - 20,
+                arcade.color.PALE_GOLD,
+                20,
+                width=SCREEN_WIDTH,
+                align="center",
+                anchor_x="center",
+                anchor_y="center",
+            )
         if self.emitter:
             self.emitter.draw()
-            arcade.draw_text("Particles: " + str(self.emitter.get_count()), 10, 30, arcade.color.PALE_GOLD, 12)
+            arcade.draw_text(
+                f"Particles: {str(self.emitter.get_count())}",
+                10,
+                30,
+                arcade.color.PALE_GOLD,
+                12,
+            )
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:

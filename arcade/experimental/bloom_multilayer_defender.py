@@ -55,28 +55,24 @@ class Player(arcade.SpriteSolidColor):
     def accelerate_up(self):
         """ Accelerate player up """
         self.change_y += VERTICAL_ACCELERATION
-        if self.change_y > MAX_VERTICAL_MOVEMENT_SPEED:
-            self.change_y = MAX_VERTICAL_MOVEMENT_SPEED
+        self.change_y = min(self.change_y, MAX_VERTICAL_MOVEMENT_SPEED)
 
     def accelerate_down(self):
         """ Accelerate player down """
         self.change_y -= VERTICAL_ACCELERATION
-        if self.change_y < -MAX_VERTICAL_MOVEMENT_SPEED:
-            self.change_y = -MAX_VERTICAL_MOVEMENT_SPEED
+        self.change_y = max(self.change_y, -MAX_VERTICAL_MOVEMENT_SPEED)
 
     def accelerate_right(self):
         """ Accelerate player right """
         self.face_right = True
         self.change_x += HORIZONTAL_ACCELERATION
-        if self.change_x > MAX_HORIZONTAL_MOVEMENT_SPEED:
-            self.change_x = MAX_HORIZONTAL_MOVEMENT_SPEED
+        self.change_x = min(self.change_x, MAX_HORIZONTAL_MOVEMENT_SPEED)
 
     def accelerate_left(self):
         """ Accelerate player left """
         self.face_right = False
         self.change_x -= HORIZONTAL_ACCELERATION
-        if self.change_x < -MAX_HORIZONTAL_MOVEMENT_SPEED:
-            self.change_x = -MAX_HORIZONTAL_MOVEMENT_SPEED
+        self.change_x = max(self.change_x, -MAX_HORIZONTAL_MOVEMENT_SPEED)
 
     def update(self):
         """ Move the player """
@@ -225,14 +221,14 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Add stars
-        for i in range(80):
+        for _ in range(80):
             sprite = arcade.SpriteSolidColor(4, 4, arcade.color.WHITE)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(600)
             self.star_sprite_list.append(sprite)
 
         # Add enemies
-        for i in range(20):
+        for _ in range(20):
             sprite = arcade.SpriteSolidColor(20, 20, arcade.csscolor.LIGHT_SALMON)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(600)
@@ -314,7 +310,7 @@ class MyGame(arcade.Window):
             enemy_hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_sprite_list)
             for enemy in enemy_hit_list:
                 enemy.remove_from_sprite_lists()
-                for i in range(10):
+                for _ in range(10):
                     particle = Particle(4, 4, arcade.color.RED)
                     while particle.change_y == 0 and particle.change_x == 0:
                         particle.change_y = random.randrange(-2, 3)

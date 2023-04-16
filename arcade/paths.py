@@ -34,9 +34,16 @@ def has_line_of_sight(point_1: Point,
     line_of_sight = LineString([point_1, point_2])
     if 0 < max_distance < line_of_sight.length:
         return False
-    if not walls:
-        return True
-    return not any((Polygon(o.get_adjusted_hit_box()).crosses(line_of_sight) for o in walls))
+    return (
+        not any(
+            (
+                Polygon(o.get_adjusted_hit_box()).crosses(line_of_sight)
+                for o in walls
+            )
+        )
+        if walls
+        else True
+    )
 
 
 """
@@ -49,21 +56,14 @@ def _spot_is_blocked(position, moving_sprite, blocking_sprites):
     moving_sprite.position = position
     hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
     moving_sprite.position = original_pos
-    if len(hit_list) > 0:
-        return True
-    else:
-        return False
+    return len(hit_list) > 0
 
 
 class _AStarGraph(object):
     # Define a class board like grid with two barriers
 
     def __init__(self, barriers, left, right, bottom, top, diagonal_movement):
-        if barriers is set:
-            self.barriers = barriers
-        else:
-            self.barriers = set(barriers)
-
+        self.barriers = barriers if barriers is set else set(barriers)
         self.left = left
         self.right = right
         self.top = top
@@ -117,19 +117,14 @@ class _AStarGraph(object):
 
 
 def _AStarSearch(start, end, graph):
-    G = {}  # Actual movement cost to each position from the start position
-    F = {}  # Estimated movement cost of start to end going via this position
-
-    # Initialize starting values
-    G[start] = 0
-    F[start] = graph.heuristic(start, end)
-
+    G = {start: 0}
+    F = {start: graph.heuristic(start, end)}
     closed_vertices = set()
-    open_vertices = set([start])
+    open_vertices = {start}
     came_from = {}
 
     count = 0
-    while len(open_vertices) > 0:
+    while open_vertices:
         count += 1
         if count > 500:
             break
@@ -149,11 +144,8 @@ def _AStarSearch(start, end, graph):
                 current = came_from[current]
                 path.append(current)
             path.reverse()
-            if F[end] >= 10000:
-                return None
-            else:
-                return path
-            # return path, F[end]  # Done!
+            return None if F[end] >= 10000 else path
+                    # return path, F[end]  # Done!
 
         # Mark the current vertex as closed
         open_vertices.remove(current)
@@ -279,10 +271,4 @@ def astar_calculate_path(start_point: Point,
     graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)
     result = _AStarSearch(mod_start, mod_end, graph)
 
-    if result is None:
-        return None
-
-    # Currently 'result' is in grid locations. We need to convert them to pixel
-    # locations.
-    revised_result = [_expand(p, grid_size) for p in result]
-    return revised_result
+    return None if result is None else [_expand(p, grid_size) for p in result]

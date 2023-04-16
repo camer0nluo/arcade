@@ -75,10 +75,7 @@ def randomize_grid(grid: arcade.SpriteList):
     """ Randomize the grid to alive/dead """
     for cell in grid:
         pick = random.randrange(2)
-        if pick:
-            cell.alpha = ALPHA_ON
-        else:
-            cell.alpha = ALPHA_OFF
+        cell.alpha = ALPHA_ON if pick else ALPHA_OFF
 
 
 class MyGame(arcade.Window):
@@ -161,15 +158,17 @@ class MyGame(arcade.Window):
                 Any dead cell with three live neighbours becomes a live cell.
                 All other live cells die in the next generation. Similarly, all other dead cells stay dead.
                 """
-                if layer1[row][column].alpha == ALPHA_ON and (live_neighbors == 2 or live_neighbors == 3):
+                if layer1[row][column].alpha == ALPHA_ON and live_neighbors in {
+                    2,
+                    3,
+                }:
                     if layer2[row][column].alpha == ALPHA_OFF:
                         layer2[row][column].alpha = ALPHA_ON
                 elif layer1[row][column].alpha == ALPHA_OFF and live_neighbors == 3:
                     if layer2[row][column].alpha == ALPHA_OFF:
                         layer2[row][column].alpha = ALPHA_ON
-                else:
-                    if layer2[row][column].alpha == ALPHA_ON:
-                        layer2[row][column].alpha = ALPHA_OFF
+                elif layer2[row][column].alpha == ALPHA_ON:
+                    layer2[row][column].alpha = ALPHA_OFF
 
 
 def main():

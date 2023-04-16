@@ -161,7 +161,7 @@ class TextureAtlas:
 
         # A dictionary of all the allocated regions
         # The key is the cache name for a texture
-        self._atlas_regions: Dict[str, AtlasRegion] = dict()
+        self._atlas_regions: Dict[str, AtlasRegion] = {}
 
         # A set of textures this atlas contains for fast lookups + set operations
         self._textures: List["Texture"] = []
@@ -173,9 +173,9 @@ class TextureAtlas:
         self._uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._uv_data = array("f", [0] * TEXCOORD_BUFFER_SIZE * 4)
         # Free slots in the texture coordinate texture
-        self._uv_slots_free = deque(i for i in range(0, TEXCOORD_BUFFER_SIZE))
+        self._uv_slots_free = deque(iter(range(TEXCOORD_BUFFER_SIZE)))
         # Map texture names to slots
-        self._uv_slots: Dict[str, int] = dict()
+        self._uv_slots: Dict[str, int] = {}
         self._uv_data_changed = True
 
         # Add all the textures
@@ -300,16 +300,15 @@ class TextureAtlas:
             x, y, slot, region = self.allocate(texture)
         except AllocatorException:
             LOG.info("[%s] No room for %s size %s", id(self), texture.name, texture.image.size)
-            if self._auto_resize:
-                width = min(self.width * 2, self.max_width)
-                height = min(self.height * 2, self.max_height)
-                if self._size == (width, height):
-                    raise
-                self.resize((width, height))
-                return self.add(texture)
-            else:
+            if not self._auto_resize:
                 raise
 
+            width = min(self.width * 2, self.max_width)
+            height = min(self.height * 2, self.max_height)
+            if self._size == (width, height):
+                raise
+            self.resize((width, height))
+            return self.add(texture)
         self.write_texture(texture, x, y)
         return slot, region
 
@@ -554,11 +553,11 @@ class TextureAtlas:
         if texture:
             self._fbo.clear()
         self._textures = []
-        self._atlas_regions = dict()
+        self._atlas_regions = {}
         self._allocator = Allocator(*self._size)
         if texture_ids:
-            self._uv_slots_free = deque(i for i in range(TEXCOORD_BUFFER_SIZE))
-            self._uv_slots = dict()
+            self._uv_slots_free = deque(iter(range(TEXCOORD_BUFFER_SIZE)))
+            self._uv_slots = {}
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """
@@ -634,7 +633,7 @@ class TextureAtlas:
         return TextureAtlas(size, textures=textures, border=border)
 
     @classmethod
-    def calculate_minimum_size(self, textures: Sequence["Texture"], border: int = 1):
+    def calculate_minimum_size(cls, textures: Sequence["Texture"], border: int = 1):
         """
         Calculate the minimum atlas size needed to store the
         the provided sequence of textures

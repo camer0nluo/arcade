@@ -65,11 +65,8 @@ class RLDungeonGenerator:
         self.dungeon = []
         self.rooms = []
 
-        for h in range(self.height):
-            row = []
-            for w in range(self.width):
-                row.append('#')
-
+        for _ in range(self.height):
+            row = ['#' for _ in range(self.width)]
             self.dungeon.append(row)
 
     def random_split(self, min_row, min_col, max_row, max_col):
@@ -83,11 +80,10 @@ class RLDungeonGenerator:
             self.split_on_vertical(min_row, min_col, max_row, max_col)
         elif seg_height >= self.MAX > seg_width:
             self.split_on_horizontal(min_row, min_col, max_row, max_col)
+        elif random.random() < 0.5:
+            self.split_on_horizontal(min_row, min_col, max_row, max_col)
         else:
-            if random.random() < 0.5:
-                self.split_on_horizontal(min_row, min_col, max_row, max_col)
-            else:
-                self.split_on_vertical(min_row, min_col, max_row, max_col)
+            self.split_on_vertical(min_row, min_col, max_row, max_col)
 
     def split_on_horizontal(self, min_row, min_col, max_row, max_col):
         split = (min_row + max_row) // 2 + random.choice((-2, -1, 0, 1, 2))
@@ -133,16 +129,16 @@ class RLDungeonGenerator:
     @staticmethod
     def are_rooms_adjacent(room1, room2):
         """ See if two rooms are next to each other. """
-        adj_rows = []
-        adj_cols = []
-        for r in range(room1.row, room1.row + room1.height):
-            if room2.row <= r < room2.row + room2.height:
-                adj_rows.append(r)
-
-        for c in range(room1.col, room1.col + room1.width):
-            if room2.col <= c < room2.col + room2.width:
-                adj_cols.append(c)
-
+        adj_rows = [
+            r
+            for r in range(room1.row, room1.row + room1.height)
+            if room2.row <= r < room2.row + room2.height
+        ]
+        adj_cols = [
+            c
+            for c in range(room1.col, room1.col + room1.width)
+            if room2.col <= c < room2.col + room2.width
+        ]
         return adj_rows, adj_cols
 
     @staticmethod
@@ -206,7 +202,7 @@ class RLDungeonGenerator:
             for room in group:
                 key = (room.row, room.col)
                 for other in room_dict[key]:
-                    if not other[0] in group and other[3] < shortest_distance:
+                    if other[0] not in group and other[3] < shortest_distance:
                         shortest_distance = other[3]
                         start = room
                         nearest = other
@@ -214,13 +210,7 @@ class RLDungeonGenerator:
 
         self.carve_corridor_between_rooms(start, nearest)
 
-        # Merge the groups
-        other_group = None
-        for group in groups:
-            if nearest[0] in group:
-                other_group = group
-                break
-
+        other_group = next((group for group in groups if nearest[0] in group), None)
         start_group += other_group
         groups.remove(other_group)
 
@@ -297,10 +287,9 @@ class MyGame(arcade.Window):
         dg.generate_map()
 
         # Create sprites based on 2D grid
-        if not MERGE_SPRITES:
-            # This is the simple-to-understand method. Each grid location
-            # is a sprite.
-            for row in range(dg.height):
+        for row in range(dg.height):
+                # Create sprites based on 2D grid
+            if not MERGE_SPRITES:
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
                     if value == '#':
@@ -308,12 +297,7 @@ class MyGame(arcade.Window):
                         wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         self.wall_list.append(wall)
-        else:
-            # This uses new Arcade 1.3.1 features, that allow me to create a
-            # larger sprite with a repeating texture. So if there are multiple
-            # cells in a row with a wall, we merge them into one sprite, with a
-            # repeating texture for each cell. This reduces our sprite count.
-            for row in range(dg.height):
+            else:
                 column = 0
                 while column < dg.width:
                     while column < dg.width and dg.dungeon[row][column] != '#':
@@ -407,9 +391,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):

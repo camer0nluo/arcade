@@ -46,7 +46,7 @@ def create_empty_grid(width, height, default_value=TILE_EMPTY):
     grid = []
     for row in range(height):
         grid.append([])
-        for column in range(width):
+        for _ in range(width):
             grid[row].append(default_value)
     return grid
 
@@ -184,22 +184,16 @@ class MyGame(arcade.Window):
         maze = make_maze_recursion(MAZE_WIDTH, MAZE_HEIGHT)
 
         # Create sprites based on 2D grid
-        if not MERGE_SPRITES:
-            # This is the simple-to-understand method. Each grid location
-            # is a sprite.
-            for row in range(MAZE_HEIGHT):
+        for row in range(MAZE_HEIGHT):
+                # Create sprites based on 2D grid
+            if not MERGE_SPRITES:
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
                         wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
-        else:
-            # This uses new Arcade 1.3.1 features, that allow me to create a
-            # larger sprite with a repeating texture. So if there are multiple
-            # cells in a row with a wall, we merge them into one sprite, with a
-            # repeating texture for each cell. This reduces our sprite count.
-            for row in range(MAZE_HEIGHT):
+            else:
                 column = 0
                 while column < len(maze):
                     while column < len(maze) and maze[row][column] == 0:
@@ -302,9 +296,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):

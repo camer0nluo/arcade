@@ -55,19 +55,10 @@ class MyGame(arcade.Window):
                 bottom_right = (x + HALF_SQUARE_WIDTH, y - HALF_SQUARE_HEIGHT)
                 bottom_left = (x - HALF_SQUARE_WIDTH, y - HALF_SQUARE_HEIGHT)
 
-                # Add the points to the points list.
-                # ORDER MATTERS!
-                # Rotate around the rectangle, don't append points caty-corner
-                point_list.append(top_left)
-                point_list.append(top_right)
-                point_list.append(bottom_right)
-                point_list.append(bottom_left)
-
+                point_list.extend((top_left, top_right, bottom_right, bottom_left))
                 # Add a color for each point. Can be different colors if you want
                 # gradients.
-                for i in range(4):
-                    color_list.append(arcade.color.DARK_BLUE)
-
+                color_list.extend(arcade.color.DARK_BLUE for _ in range(4))
         shape = arcade.create_rectangles_filled_with_colors(point_list, color_list)
         self.shape_list.append(shape)
 

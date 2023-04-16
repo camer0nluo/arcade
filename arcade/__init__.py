@@ -45,7 +45,7 @@ lib_location = lib_location / "lib"
 
 if sys.platform == "darwin" or sys.platform.startswith("linux"):
     if "LD_LIBRARY_PATH" in os.environ:
-        os.environ["LD_LIBRARY_PATH"] += ":" + str(lib_location)
+        os.environ["LD_LIBRARY_PATH"] += f":{str(lib_location)}"
     else:
         os.environ["LD_LIBRARY_PATH"] = str(lib_location)
 else:
@@ -499,7 +499,10 @@ __all__ = ['AStarBarrierList',
 
 __version__ = VERSION
 
-if not os.path.basename(sys.argv[0]) == "sphinx-build" and 'READTHEDOCS' not in os.environ:
+if (
+    os.path.basename(sys.argv[0]) != "sphinx-build"
+    and 'READTHEDOCS' not in os.environ
+):
     # Auto load fonts
     load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
     load_font(":resources:fonts/ttf/Kenney Future.ttf")

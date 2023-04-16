@@ -119,8 +119,9 @@ class MyGame(arcade.Window):
             coin.intensity = 'bright'
             coin.alpha = 255
 
-        hit_trigger = arcade.check_for_collision(self.player_sprite, self.trigger_sprite)
-        if hit_trigger:
+        if hit_trigger := arcade.check_for_collision(
+            self.player_sprite, self.trigger_sprite
+        ):
             intense_sprites = [sprite for sprite in self.coin_list if sprite.intensity == 'bright']
             for coin in intense_sprites:
                 coin.remove_from_sprite_lists()

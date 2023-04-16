@@ -27,11 +27,7 @@ class Player(arcade.Sprite):
     def __init__(self, filename, scale):
         super().__init__(filename, scale)
 
-        # Get list of game controllers that are available
-        joysticks = arcade.get_joysticks()
-
-        # If we have any...
-        if joysticks:
+        if joysticks := arcade.get_joysticks():
             # Grab the first one in  the list
             self.joystick = joysticks[0]
 
@@ -82,17 +78,17 @@ class Player(arcade.Sprite):
     # noinspection PyMethodMayBeStatic
     def on_joybutton_press(self, _joystick, button):
         """ Handle button-down event for the joystick """
-        print("Button {} down".format(button))
+        print(f"Button {button} down")
 
     # noinspection PyMethodMayBeStatic
     def on_joybutton_release(self, _joystick, button):
         """ Handle button-up event for the joystick """
-        print("Button {} up".format(button))
+        print(f"Button {button} up")
 
     # noinspection PyMethodMayBeStatic
     def on_joyhat_motion(self, _joystick, hat_x, hat_y):
         """ Handle hat events """
-        print("Hat ({}, {})".format(hat_x, hat_y))
+        print(f"Hat ({hat_x}, {hat_y})")
 
 class MyGame(arcade.Window):
     """
@@ -168,9 +164,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
 

@@ -14,10 +14,10 @@ class PostProcessing:
     """Base class"""
     def __init__(self, size: Tuple[int, int], *args, **kwargs):
         self._size = size
-        window = get_window()
-        if not window:
+        if window := get_window():
+            self._ctx = window.ctx
+        else:
             raise RuntimeError("No window found")
-        self._ctx = window.ctx
 
     @property
     def ctx(self) -> ArcadeContext:

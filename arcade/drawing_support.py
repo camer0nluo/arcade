@@ -37,8 +37,7 @@ def get_points_for_thick_line(start_x: float, start_y: float,
     r3_y = end_y + normal_y * line_width / 2
     r4_x = end_x - normal_x * line_width / 2
     r4_y = end_y - normal_y * line_width / 2
-    points = (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
-    return points
+    return (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
 
 
 def get_four_byte_color(color: Color) -> RGBA:
@@ -83,7 +82,7 @@ def get_three_float_color(color: Color) -> Tuple[float, float, float, float]:
     :param Color color: Three or four byte tuple
     :return: Three floats as a RGB tuple
     """
-    if len(color) == 4 or len(color) == 3:
+    if len(color) in {4, 3}:
         return color[0] / 255, color[1] / 255, color[2] / 255  # type: ignore
     else:
         raise ValueError("This isn't a 3 or 4 byte color")

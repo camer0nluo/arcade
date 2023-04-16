@@ -465,7 +465,7 @@ class Window(pyglet.window.Window):
         :param int frames:
         """
         start_time = time.time()
-        for i in range(frames):
+        for _ in range(frames):
             self.switch_to()
             self.dispatch_events()
             self.dispatch_event('on_draw')
@@ -633,11 +633,7 @@ class View:
     def __init__(self,
                  window: Window = None):
 
-        if window is None:
-            self.window = arcade.get_window()
-        else:
-            self.window = window
-
+        self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
 
     def update(self, delta_time: float):

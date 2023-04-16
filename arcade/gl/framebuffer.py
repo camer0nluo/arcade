@@ -337,14 +337,12 @@ class Framebuffer:
                     gl.glClearColor(*color, 1.0)
                 else:
                     gl.glClearColor(*color)
+            elif len(color) == 3:
+                gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
             else:
-                # OpenGL wants normalized colors (0.0 -> 1.0)
-                if len(color) == 3:
-                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
-                else:
-                    gl.glClearColor(
-                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
-                    )
+                gl.glClearColor(
+                    color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+                )
 
             if self.depth_attachment:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
@@ -446,13 +444,11 @@ class Framebuffer:
         status = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
         if status != gl.GL_FRAMEBUFFER_COMPLETE:
             raise ValueError(
-                "Framebuffer is incomplete. {}".format(
-                    states.get(status, "Unknown error")
-                )
+                f'Framebuffer is incomplete. {states.get(status, "Unknown error")}'
             )
 
     def __repr__(self):
-        return "<Framebuffer glo={}>".format(self._glo.value)
+        return f"<Framebuffer glo={self._glo.value}>"
 
 
 class DefaultFrameBuffer(Framebuffer):

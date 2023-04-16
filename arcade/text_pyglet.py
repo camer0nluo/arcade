@@ -112,7 +112,7 @@ def draw_text(
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}"
     cache = arcade.get_window().ctx.pyglet_label_cache
     label = cache.get(key)
-    if align != "center" and align != "left" and align != "right":
+    if align not in ["center", "left", "right"]:
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
     if align != "left":
         multiline = True
@@ -121,11 +121,7 @@ def draw_text(
         adjusted_font = font_name
 
         if font_name:
-            if isinstance(font_name, str):
-                font_list = (font_name, )
-            else:
-                font_list = font_name
-
+            font_list = (font_name, ) if isinstance(font_name, str) else font_name
             for font in font_list:
                 try:
                     path = resolve_resource_path(font)

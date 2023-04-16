@@ -39,16 +39,16 @@ def dump_obj(obj):
 
 
 def dump_joystick(joy):
-    print("========== {}".format(joy))
-    print("x       {}".format(joy.x))
-    print("y       {}".format(joy.y))
-    print("z       {}".format(joy.z))
-    print("rx      {}".format(joy.rx))
-    print("ry      {}".format(joy.ry))
-    print("rz      {}".format(joy.rz))
-    print("hat_x   {}".format(joy.hat_x))
-    print("hat_y   {}".format(joy.hat_y))
-    print("buttons {}".format(joy.buttons))
+    print(f"========== {joy}")
+    print(f"x       {joy.x}")
+    print(f"y       {joy.y}")
+    print(f"z       {joy.z}")
+    print(f"rx      {joy.rx}")
+    print(f"ry      {joy.ry}")
+    print(f"rz      {joy.rz}")
+    print(f"hat_x   {joy.hat_x}")
+    print(f"hat_y   {joy.hat_y}")
+    print(f"buttons {joy.buttons}")
     print("========== Extra joy")
     dump_obj(joy)
     print("========== Extra joy.device")
@@ -60,10 +60,7 @@ def dump_joystick(joy):
 
 
 def dump_joystick_state(ticks, joy):
-    # print("{:5.2f} {:5.2f} {:>20} {:5}_".format(1.234567, -8.2757272903, "hello", str(True)))
-    fmt_str = "{:6d} "
-    num_fmts = ["{:5.2f}"] * 6
-    fmt_str += " ".join(num_fmts)
+    fmt_str = "{:6d} " + " ".join(["{:5.2f}"] * 6)
     fmt_str += " {:2d} {:2d} {}"
     buttons = " ".join(["{:5}".format(str(b)) for b in joy.buttons])
     print(fmt_str.format(ticks,
@@ -142,7 +139,7 @@ class MyGame(arcade.View):
             dump_joystick(joy)
         if joys:
             self.joy = joys[0]
-            print("Using joystick controls: {}".format(self.joy.device))
+            print(f"Using joystick controls: {self.joy.device}")
             arcade.window_commands.schedule(self.debug_joy_state, 0.1)
         if not self.joy:
             print("No joystick present, using keyboard controls")
@@ -183,24 +180,22 @@ class MyGame(arcade.View):
             shoot_x, shoot_y, shoot_angle = get_joy_position(self.joy.shoot_stick_x, self.joy.shoot_stick_y)
             if shoot_angle:
                 self.spawn_bullet(shoot_angle)
-        else:
-            # Keyboard input - shooting
-            if self.player.shoot_right_pressed and self.player.shoot_up_pressed:
-                self.spawn_bullet(0+45)
-            elif self.player.shoot_up_pressed and self.player.shoot_left_pressed:
-                self.spawn_bullet(90+45)
-            elif self.player.shoot_left_pressed and self.player.shoot_down_pressed:
-                self.spawn_bullet(180+45)
-            elif self.player.shoot_down_pressed and self.player.shoot_right_pressed:
-                self.spawn_bullet(270+45)
-            elif self.player.shoot_right_pressed:
-                self.spawn_bullet(0)
-            elif self.player.shoot_up_pressed:
-                self.spawn_bullet(90)
-            elif self.player.shoot_left_pressed:
-                self.spawn_bullet(180)
-            elif self.player.shoot_down_pressed:
-                self.spawn_bullet(270)
+        elif self.player.shoot_right_pressed and self.player.shoot_up_pressed:
+            self.spawn_bullet(0+45)
+        elif self.player.shoot_up_pressed and self.player.shoot_left_pressed:
+            self.spawn_bullet(90+45)
+        elif self.player.shoot_left_pressed and self.player.shoot_down_pressed:
+            self.spawn_bullet(180+45)
+        elif self.player.shoot_down_pressed and self.player.shoot_right_pressed:
+            self.spawn_bullet(270+45)
+        elif self.player.shoot_right_pressed:
+            self.spawn_bullet(0)
+        elif self.player.shoot_up_pressed:
+            self.spawn_bullet(90)
+        elif self.player.shoot_left_pressed:
+            self.spawn_bullet(180)
+        elif self.player.shoot_down_pressed:
+            self.spawn_bullet(270)
 
         self.enemy_list.update()
         self.player.update()
@@ -329,7 +324,7 @@ class JoyConfigView(arcade.View):
     def config_axis(self, joy_axis_label, method_name):
         self.msg = joy_axis_label
         self.axis_ranges = {a: 0.0 for a in self.JOY_ATTRS}
-        while max([v for k, v in self.axis_ranges.items()]) < 0.85:
+        while max(v for k, v in self.axis_ranges.items()) < 0.85:
             for attr, farthest_val in self.axis_ranges.items():
                 cur_val = getattr(self.joy, attr)
                 if abs(cur_val) > abs(farthest_val):
@@ -342,7 +337,7 @@ class JoyConfigView(arcade.View):
             if farthest_val > max_val:
                 max_attr = attr
                 max_val = farthest_val
-        self.msg = f"Registered!"
+        self.msg = "Registered!"
 
         setattr(pyglet.input.base.Joystick, method_name, property(lambda that: getattr(that, max_attr), None))
 

@@ -192,8 +192,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Create the coins
-        for coin_index in range(COIN_COUNT):
-
+        for _ in range(COIN_COUNT):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png",
@@ -277,7 +276,7 @@ class MyGame(arcade.Window):
             # For every coin we hit, add to the score and remove the coin
             for coin in hit_list:
                 # Make an explosion
-                for i in range(PARTICLE_COUNT):
+                for _ in range(PARTICLE_COUNT):
                     particle = Particle(self.explosions_list)
                     particle.position = coin.position
                     self.explosions_list.append(particle)

@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
             for color in dir(arcade.color)
             if not color.startswith("__")
         ]
-        for i in range(5):
+        for _ in range(5):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             color = random.choice(colors)
@@ -58,7 +58,7 @@ class MyGame(arcade.Window):
         point_list = ((-50, -50),
                       (0, 40),
                       (50, -50))
-        for i in range(5):
+        for _ in range(5):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
@@ -72,7 +72,7 @@ class MyGame(arcade.Window):
                       (-50, 70),
                       (50, 70),
                       (50, -70))
-        for i in range(5):
+        for _ in range(5):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]

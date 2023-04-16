@@ -77,11 +77,11 @@ class MyGame(arcade.Window):
         self.space.add(shape, body)
         self.static_lines.append(shape)
 
+        size = 32
+        mass = 1.0
         # Create the stacks of boxes
         for row in range(10):
             for column in range(10):
-                size = 32
-                mass = 1.0
                 x = 500 + column * 32
                 y = (floor_height + size / 2) + row * size
                 moment = pymunk.moment_for_box(mass, (size, size))

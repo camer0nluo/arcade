@@ -63,11 +63,11 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
 
+        # Have a random 1 in 200 change of shooting each 1/60th of a second
+        odds = 200
+
         # Loop through each enemy that we have
         for enemy in self.enemy_list:
-
-            # Have a random 1 in 200 change of shooting each 1/60th of a second
-            odds = 200
 
             # Adjust odds based on delta-time
             adj_odds = int(odds * (1 / 60) / delta_time)

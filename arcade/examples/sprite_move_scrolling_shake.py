@@ -84,7 +84,7 @@ class MyGame(arcade.Window):
                     wall.center_y = y
                     self.wall_list.append(wall)
 
-        for i in range(BOMB_COUNT):
+        for _ in range(BOMB_COUNT):
             bomb = arcade.Sprite(":resources:images/tiles/bomb.png", 0.25)
             placed = False
             while not placed:
@@ -130,9 +130,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
@@ -146,6 +146,10 @@ class MyGame(arcade.Window):
         self.scroll_to_player()
 
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.bomb_list)
+        # How 'far' to shake
+        shake_amplitude = 10
+        # Frequency of the shake
+        shake_speed = 1.5
         for bomb in hit_list:
 
             # Remove the bomb and go 'boom'
@@ -155,18 +159,10 @@ class MyGame(arcade.Window):
             # --- Shake the camera ---
             # Pick a random direction
             shake_direction = random.random() * 2 * math.pi
-            # How 'far' to shake
-            shake_amplitude = 10
             # Calculate a vector based on that
             shake_vector = math.cos(shake_direction) * shake_amplitude, math.sin(shake_direction) * shake_amplitude
-            # Frequency of the shake
-            shake_speed = 1.5
-            # How fast to damp the shake
-            shake_damping = 0.9
             # Do the shake
-            self.camera_sprites.shake(shake_vector,
-                                      speed=shake_speed,
-                                      damping=shake_damping)
+            self.camera_sprites.shake(shake_vector, speed=shake_speed, damping=0.9)
 
     def scroll_to_player(self):
         """

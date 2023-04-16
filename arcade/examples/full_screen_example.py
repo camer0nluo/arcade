@@ -70,11 +70,11 @@ class MyGame(arcade.Window):
                          screen_width // 2, screen_height // 2 + 20,
                          arcade.color.WHITE, text_size, anchor_x="center")
 
+        y = 64
+        width = 128
+        height = 128
         # Draw some boxes on the bottom so we can see how they change
         for x in range(64, 800, 128):
-            y = 64
-            width = 128
-            height = 128
             arcade.draw_texture_rectangle(x, y, width, height, self.example_image)
 
     def on_key_press(self, key, modifiers):

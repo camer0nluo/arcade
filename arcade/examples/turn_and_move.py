@@ -80,7 +80,7 @@ class Player(arcade.Sprite):
             clockwise = None
         elif angle_diff_radians > 0 and abs(angle_diff_radians) < math.pi:
             clockwise = False
-        elif angle_diff_radians > 0 and abs(angle_diff_radians) >= math.pi:
+        elif angle_diff_radians > 0:
             clockwise = True
         elif angle_diff_radians < 0 and abs(angle_diff_radians) < math.pi:
             clockwise = True

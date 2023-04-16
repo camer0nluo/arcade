@@ -10,8 +10,7 @@ def read_results(filename):
     results = []
     with open(filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            results.append([float(cell) for cell in row])
+        results.extend([float(cell) for cell in row] for row in csv_reader)
         return results
 
 

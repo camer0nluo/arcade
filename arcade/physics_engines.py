@@ -55,11 +55,11 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
 
     original_x = moving_sprite.center_x
     original_y = moving_sprite.center_y
-    original_angle = moving_sprite.angle
-
     # --- Rotate
     rotating_hit_list = []
     if moving_sprite.change_angle:
+
+        original_angle = moving_sprite.angle
 
         # Rotate
         moving_sprite.angle += moving_sprite.change_angle
@@ -105,27 +105,10 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
                     moving_sprite.center_x += item.change_x
 
             # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-        else:
-            pass
-            # TODO: The code below can't execute, as "item" doesn't
-            # exist. In theory, this condition should never be arrived at.
-            # Collision while player wasn't moving, most likely
-            # moving platform.
-            # if self.player_sprite.center_y >= item.center_y:
-            #     self.player_sprite.bottom = item.top
-            # else:
-            #     self.player_sprite.top = item.bottom
         moving_sprite.change_y = min(0.0, hit_list_x[0].change_y)
 
     # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
     moving_sprite.center_y = round(moving_sprite.center_y, 2)
-    # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
-    # end_time = time.time()
-    # print(f"Move 1 - {end_time - start_time:7.4f}")
-    # start_time = time.time()
-
-    loop_count = 0
     # --- Move in the x direction
     if moving_sprite.change_x:
         # Keep track of our current y, used in ramping up
@@ -140,6 +123,13 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
         cur_y_change = 0
 
         exit_loop = False
+        # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+
+        # end_time = time.time()
+        # print(f"Move 1 - {end_time - start_time:7.4f}")
+        # start_time = time.time()
+
+        loop_count = 0
         while not exit_loop:
 
             loop_count += 1
@@ -199,7 +189,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
         moving_sprite.center_y = almost_original_y + cur_y_change
-        # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
+            # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
 
     # Add in rotating hit list
     for sprite in rotating_hit_list:
@@ -319,16 +309,17 @@ class PhysicsEnginePlatformer:
 
         # Check for wall hit
         hit_list = check_for_collision_with_lists(self.player_sprite, self.platforms)
-        
+
         self.player_sprite.center_y += y_distance
 
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
-            return True
-        else:
-            return False
+        return bool(
+            len(hit_list) > 0
+            or self.allow_multi_jump
+            and self.jumps_since_ground < self.allowed_jumps
+        )
 
     def enable_multi_jump(self, allowed_jumps: int):
         """

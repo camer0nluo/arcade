@@ -34,13 +34,9 @@ class Coin(arcade.Sprite):
         self.position = (self.position[0] + self.change_x, self.position[1] + self.change_y)
 
         # Bounce the coin on the edge
-        if self.position[0] < 0:
+        if self.position[0] < 0 or self.position[0] > SCREEN_WIDTH:
             self.change_x *= -1
-        elif self.position[0] > SCREEN_WIDTH:
-            self.change_x *= -1
-        if self.position[1] < 0:
-            self.change_y *= -1
-        elif self.position[1] > SCREEN_HEIGHT:
+        if self.position[1] < 0 or self.position[1] > SCREEN_HEIGHT:
             self.change_y *= -1
 
 
@@ -63,7 +59,7 @@ class MyGame(arcade.Window):
     def add_coins(self, amount):
 
         # Create the coins
-        for i in range(amount):
+        for _ in range(amount):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)

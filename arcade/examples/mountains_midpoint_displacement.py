@@ -102,11 +102,8 @@ def fix_points(points):
     y1 = last_y
     y2 = last_y
 
-    new_list.append((x1, 0))
-    new_list.append((x1, y1))
-    new_list.append((x2, y2))
-    new_list.append((x2, 0))
-
+    new_list.extend(((x1, 0), (x1, y1)))
+    new_list.extend(((x2, y2), (x2, 0)))
     return new_list
 
 

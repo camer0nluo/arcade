@@ -63,7 +63,7 @@ def setup_room_1():
         # Loop for each box going across
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up on the right side
-            if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x == 0:
+            if y not in [SPRITE_SIZE * 4, SPRITE_SIZE * 5] or x == 0:
                 wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
                 wall.left = x
                 wall.bottom = y
@@ -108,7 +108,7 @@ def setup_room_2():
         # Loop for each box going across
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
-            if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
+            if y not in [SPRITE_SIZE * 4, SPRITE_SIZE * 5] or x != 0:
                 wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
                 wall.left = x
                 wall.bottom = y
@@ -209,9 +209,9 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in [arcade.key.LEFT, arcade.key.RIGHT]:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):

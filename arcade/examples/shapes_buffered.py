@@ -127,7 +127,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
         self.shape_list = []
 
-        for i in range(NUMBER_OF_SHAPES):
+        for _ in range(NUMBER_OF_SHAPES):
             x = random.randrange(0, SCREEN_WIDTH)
             y = random.randrange(0, SCREEN_HEIGHT)
             width = random.randrange(10, 30)

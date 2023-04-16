@@ -126,10 +126,7 @@ def get_scaling_factor(window: "Window" = None) -> float:
              in the framebuffer.
     :rtype: float
     """
-    if window:
-        return window.get_pixel_ratio()
-    else:
-        return get_window().get_pixel_ratio()
+    return window.get_pixel_ratio() if window else get_window().get_pixel_ratio()
 
 
 def set_viewport(left: float, right: float, bottom: float, top: float) -> None:

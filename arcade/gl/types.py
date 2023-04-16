@@ -244,7 +244,7 @@ class BufferDescription:
             raise ValueError("Normalized attribute not found in attributes.")
 
         formats_list = formats.split(" ")
-        non_padded_formats = [f for f in formats_list if not "x" in f]
+        non_padded_formats = [f for f in formats_list if "x" not in f]
 
         if len(non_padded_formats) != len(self.attributes):
             raise ValueError(

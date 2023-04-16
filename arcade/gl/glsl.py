@@ -93,11 +93,11 @@ class ShaderSource:
             if line.startswith("#define"):
                 try:
                     name = line.split()[1]
-                    value = defines.get(name)
-                    if not value:
+                    if value := defines.get(name):
+                        lines[nr] = f"#define {name} {str(value)}"
+                    else:
                         continue
 
-                    lines[nr] = "#define {} {}".format(name, str(value))
                 except IndexError:
                     pass
 
@@ -106,8 +106,7 @@ class ShaderSource:
     def _parse_out_attributes(self):
         """Locates out attributes so we don't have to manually supply them"""
         for line in self._lines:
-            res = re.match(
+            if res := re.match(
                 r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip()
-            )
-            if res:
+            ):
                 self._out_attributes.append(res.groups()[-1])
